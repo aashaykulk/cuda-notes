@@ -1,23 +1,22 @@
-<span style = "font-family: Monospace">
+<span style = "font-family: 'JetBrains Mono', monospace; font-size: 12">
 
-### Programming Massively Parallel Processors
-<hr></hr>
-
+## Programming Massively Parallel Processors
+### CH1: Introduction
 * multicore CPUs: maximize execution speed of sequential programs
 * many-core GPUs: execution throughput of parallel applications
 
-> large performance gap between parallel and sequential execution
+* **large** performance gap between parallel and sequential execution
 
 Why?:
 
-> developers move computationally intensive parts of software to GPUs
+* developers move computationally intensive parts of software to GPUs
 
-> design of a CPU is optimized for sequential code performance
+* design of a CPU is optimized for sequential code performance
 
-> memory bandwidth is another issue. GPUs move data much faster in and out of its DRAM.
+* memory bandwidth is another issue. GPUs move data much faster in and out of its DRAM.
 
-> video games require massive number of floating point calculations per video frame, being executed parallely and GPUs have been used for this purpose.
----
+* video games require massive number of floating point calculations per video frame, being executed parallely and GPUs have been used for this purpose.
+
 #### CUDA (Compute Unified Device Architecture)
 * programming model created by NVIDIA to support joint CPU/GPU execution of an application.
 
@@ -37,7 +36,8 @@ Why?:
     * launching kernel function for execution by parallel parts
     * transfering data back to host processor with API function call
 
-    -----
+-----
+###  CH2: History of GPU Computing
 #### GPGPU
 General Purpose Computing on GPUs.
 * GPU processor array and frame buffer memory were designed to process graphics data and were too restrictive for general numerical applications.
@@ -51,6 +51,8 @@ General Purpose Computing on GPUs.
 * no longer need to use graphics API to access parallel computing capabilities 
 
 -----
+### CH3: Introduction to CUDA
+
 #### Data Parallelism
 * computing system consists of host (CPU) & devices (massively parallel processors)
 * CUDA devices accelerate execution of applications by harvesting a large amount of data parallelism.
@@ -211,4 +213,10 @@ dim3 dimGrid(1, 1);
 // Launch device computation threads!
 MatrixMulKernel<<<dimGrid, dimBlock>>>(Md, Nd, Pd, Width);
 ```
+---
+### CH4: CUDA Threads
+
+
+
+
 </span>
