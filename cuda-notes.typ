@@ -1,35 +1,49 @@
 // ---------- basic style ----------  
-#set page(paper: "a4", margin: 1.8cm)  
-#set text(  
-  font: "JetBrains Mono",  // Ensure this font is installed or use "DejaVu Sans Mono"  
-  size: 11pt,  
-)  
-#set par(  
-  leading: 1.25em,  
-  justify: false,  
-  first-line-indent: 0pt,  
-)  
+#import "@preview/minimal-note:0.10.0": minimal-note
+
+#show: minimal-note.with(
+  title: [Notes on CUDA Programming],
+  author: [Aashay Kulkarni],
+  date: datetime.today().display("[month repr:long], [year]")
+)
+// #set page(
+//   paper: "a4", 
+//   margin: 2.0cm,
+//   header: [_Aashay Kulkarni's CUDA notes_ #line(length: 100%)], 
+//   numbering: "1",
+//   align: "justified",
+// )  
+// #set text(  
+//   font: "Times New Roman",  // Ensure this font is installed or use "DejaVu Sans Mono"  
+//   size: 10pt,  
+// )  
+// #set par(
+//   justify: true,  
+//   first-line-indent: 0pt,  
+// )  
   
 // ---------- notes ----------  
   
-= Programming Massively Parallel Processors  
   
-== CH1: Introduction  
+
+#pagebreak()
+
+=  Introduction
+\
+
+Multicore CPUs enable you to maximize execution speed of sequential programs, while many-core GPUs allow greater execution throughput of parallel applications. 
+
+Today, there is a *large* performance gap between parallel and sequential execution.
+ 
+*Why?*
   
-- multicore CPUs: maximize execution speed of sequential programs  
-- many-core GPUs: execution throughput of parallel applications  
-  
-- *large* performance gap between parallel and sequential execution  
-  
-Why?  
-  
-- developers move computationally intensive parts of software to GPUs  
 - design of a CPU is optimized for sequential code performance  
 - memory bandwidth is another issue. GPUs move data much faster in and out of its DRAM.  
+- developers move computationally intensive parts of software to GPUs  
 - video games require massive number of floating point calculations per video frame,  
   being executed in parallel and GPUs have been used for this purpose.  
   
-=== CUDA (Compute Unified Device Architecture)  
+== CUDA (Compute Unified Device Architecture)  
   
 - programming model created by NVIDIA to support joint CPU/GPU execution of an application.  
 - CUDA-capable GPU is organized into an array of highly threaded streaming multiprocessors (SMs).  
@@ -51,14 +65,15 @@ Why?
     in the parallel part  
   - launching kernel functions for execution by parallel parts  
   - transferring data back to the host processor with API function calls  
+
+#pagebreak()
+ 
+= History of GPU Computing  
+\
+== GPGPU  
+
   
-#line(length: 100%)  
-  
-== CH2: History of GPU Computing  
-  
-=== GPGPU  
-  
-General Purpose Computing on GPUs.  
+- General Purpose Computing on GPUs.  
   
 - GPU processor array and frame buffer memory were designed to process graphics data  
   and were too restrictive for general numerical applications.  
@@ -67,19 +82,19 @@ General Purpose Computing on GPUs.
 - the handful of useful applications created with general computations on a GPU ->  
   this field was called GPGPU.  
   
-=== GPU Computing  
+== GPU Computing  
   
 - NVIDIA developed Tesla GPU Architecture.  
-- programming paradigm to think of GPU like a processor.  
+  - programming paradigm to think of GPU like a processor.  
 - programming approach involved explicit declaration of data-parallel aspects  
   of their workload.  
 - no longer need to use graphics API to access parallel computing capabilities.  
   
-#line(length: 100%)  
   
-== CH3: Introduction to CUDA  
-  
-=== Data Parallelism  
+#pagebreak()
+= Introduction to CUDA  
+
+== Data Parallelism  
   
 - computing system consists of host (CPU) & devices (massively parallel processors)  
 - CUDA devices accelerate execution of applications by harvesting a large amount of  
@@ -88,7 +103,7 @@ General Purpose Computing on GPUs.
   - as every entry $p_(i j)$ is independent of each other, a large amount of  
     data parallelism can be performed.  
   
-=== CUDA Program Structure  
+== CUDA Program Structure  
   
 - CUDA program comprises phases that are executed either by the host (CPU) or a  
   device such as a GPU.  
@@ -127,27 +142,25 @@ int main (void) {
     return 0;  
 }
 ```
-=== Device Memory & Data Transfer
+== Device Memory & Data Transfer
 
 #image("./pics/3.png", width: 80%)
 
-CUDA runtime system provides API functions to perform memory allocation and data transfer between host and devices.
+- CUDA runtime system provides API functions to perform memory allocation and data transfer between host and devices.
 
-CUDA devices comprise global memory and constant memory; these are accessible from host code.
+- CUDA devices comprise global memory and constant memory; these are accessible from host code.
 
-Constant memory is read-only for device code.
+- Constant memory is read-only for device code.
 
-API functions cudaMalloc() and cudaFree() allocate and free global memory.
+- API functions cudaMalloc() and cudaFree() allocate and free global memory.
 
-API function cudaMemcpy() transfers data between host & device memory.
+- API function cudaMemcpy() transfers data between host & device memory.
 
 #image("./pics/4.png", width: 80%)
 
-For cudaMalloc():
+*For cudaMalloc():*
 
-First parameter is a generic pointer (void **)
-
-Second parameter is the size in bytes
+First parameter is a generic pointer (void **), Second parameter is the size in bytes
 
 Example:
 ```c
@@ -160,15 +173,9 @@ cudaFree(Md);
 
 ```
 
-For cudaMemcpy():
+*For cudaMemcpy():*
 
-First argument = destination pointer
-
-Second = source pointer
-
-Third = number of bytes
-
-Fourth = direction (host→device, device→host, device→device)
+First argument is a destination pointer, Second is a source pointer, Third is number of bytes and Fourth is direction (host→device, device→host, device→device)
 
 Note: cudaMemcpy() cannot be used for memory transfer in multi-GPU systems.
 
@@ -204,7 +211,7 @@ void MatrixMultiplication(float *M, float *N, float *P, int Width) {
 }
 ```
 
-=== Kernel Functions and Threading
+== Kernel Functions and Threading
 
 In CUDA, a kernel function is executed by many threads in parallel.
 CUDA programming follows the single program, multiple data (SPMD) model.
@@ -233,14 +240,23 @@ A block is a 3D array of threads (max 512 threads): indexed by threadIdx.x, .y, 
 When launching a kernel, host code chooses grid & block size.
 
 Example:
-
+```c
 // Setup execution configuration
 dim3 dimBlock(Width, Width);
 dim3 dimGrid(1, 1);
 
 // Launch device computation threads!
-```c MatrixMulKernel<<<dimGrid, dimBlock>>>(Md, Nd, Pd, Width);```
-#line(length: 100%)  
+c MatrixMulKernel<<<dimGrid, dimBlock>>>(Md, Nd, Pd, Width);``` \
+\
 
-CH4: CUDA Threads
+#pagebreak()
+= CUDA Threads
+\
+== CUDA Thread Organization
+
+Threads in CUDA are organized in a two-level hierarchy using unique coordinates blockIdx and threadIdx. These are built-in, preinitialized variables, accesible in kernel functions.
+
+In general, a grid is organized as a 2D array of blocks. Each block is organized into a 3D array of threads. The exact organziation is determined by execution configuration.
+
+
 
