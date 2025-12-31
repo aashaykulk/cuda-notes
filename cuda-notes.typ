@@ -233,7 +233,7 @@ A grid contains one or more blocks
 
 Each block has a unique 2D coordinate
 
-#image("./pics/7.png", width: 80%)
+#image("./pics/7.png", width: 80%, height: 20%)
 
 A block is a 3D array of threads (max 512 threads): indexed by threadIdx.x, .y, .z
 
@@ -256,7 +256,22 @@ c MatrixMulKernel<<<dimGrid, dimBlock>>>(Md, Nd, Pd, Width);``` \
 
 Threads in CUDA are organized in a two-level hierarchy using unique coordinates blockIdx and threadIdx. These are built-in, preinitialized variables, accesible in kernel functions.
 
-In general, a grid is organized as a 2D array of blocks. Each block is organized into a 3D array of threads. The exact organziation is determined by execution configuration.
+In general, a CUDA grid is organized as a 2D array of blocks. Each block is organized into a 3D array of threads. The exact organziation is determined by execution configuration.
 
+Kernels are launched with a given execution parameter of a dim0 type which is a C struct wit three unsigned int fields: x,y,z. 
 
+Example:
+```c
+dim3 dimgrid(128, 1, 1)
+dim3 dimBlock(32, 1, 1)
+KernelFunction<<<dimGrid, dimBlock>>>(...);
+```
+If a grid / block only has one dimension, scalar values can be used. 
+```c
+KernelFunction<<<128, 32>>>(...);
+```
+Values of gridDims go from 1 to 655535. Values of blockIdx go from 0 to gridDim -1. 
+A _threadIdx_ has an x,y,z coordinate. Each block is limited to 1024 threads (it was 512 earlien). 
+#image("./pics/8.png", width: 80%)
 
+== Using blockIdx AND threadIdx
