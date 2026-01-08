@@ -64,8 +64,36 @@ The first parameter to ```cpp thrust::transform()``` tells Thrust where to run t
 - Transform iterator - applies a function before returning a value. Zip Iterator - references 2 sequences at once.
 - Using pointers means you will access memory every single time subscript operator is used. Using a counting iterator will just return the index at which the relevant data is stored. 
 #image("./acc_comp_pics/6.png", width: 80%) // Make sure this file exists  
+#pagebreak()
 Thrust has inbuilt operators which we can use to perform reduction algorithms, speeding up the execution of the code.
 #image("./acc_comp_pics/7.png", width: 80%) // Make sure this file exists  
+#image("./acc_comp_pics/8.png", width: 80%) // Make sure this file exists  
 
 
+#pagebreak()
+== Vocabulary Types
+
+- In the below picture, the stencil is the id which is used to find the 2D coordinates of the data.
+- Using Thrust containers, using data() will return a typed iterator while std will return a raw pointer.
+- Thrust's typed iterator can be converted to a raw pointer using thrust::raw_pointer_cast
+#image("./acc_comp_pics/9.png", width: 80%) // Make sure this file exists  
+#linebreak()
+- Thrust Tabulate can be used to apply a common algorithm which can help parallelize the operation on the GPU.
+#image("./acc_comp_pics/10.png", width: 80%) // Make sure this file exists  
+#pagebreak()
+- Below, we call std::make_pair, a host function, in a host, device function. This is not allowed and will not compile.
+#image("./acc_comp_pics/11.png", width: 80%) // Make sure this file exists  
+=== libcu++
+- To fix this, we use the libcu++ library.
+- This contains common std library types such as cuda::std::pair instead of std::pair.
+#image("./acc_comp_pics/12.png", width: 80%) // Make sure this file exists  
+
+=== mdspan
+- disadvantages of manual linearization become more apparent as number of dimensions increases.
+- cuda::std::mdspan is a non owning multidimensional view of sequence.
+- mdspan is just a 2D view of the below array, cuda::std::array is the raw data structure which stores the data.
+#image("./acc_comp_pics/13.png", width: 80%) // Make sure this file exists  
+- The operator() can be used to access the underlying sequence: md(0,0) = 0, md(1, 2) = 5
+- size() return the total number of elments in the view
+- extent(r) returns extent at rank r, md.extent(0) = 2, md.extent(1) = 3
 
