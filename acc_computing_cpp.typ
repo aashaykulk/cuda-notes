@@ -56,3 +56,16 @@ The first parameter to ```cpp thrust::transform()``` tells Thrust where to run t
   - Execution Policy: It works at runtime and indicates where the code will run. It doesn't automatically compile code for that location.
 #image("./acc_comp_pics/5.png", width: 80%) // Make sure this file exists  
 
+#linebreak()
+== Extending Standard algorithms
+
+- Using Iterators will help reduce the \# of memory accesses. 
+- Examples include counting iterators, zip iterators, transform iterators.
+- Transform iterator - applies a function before returning a value. Zip Iterator - references 2 sequences at once.
+- Using pointers means you will access memory every single time subscript operator is used. Using a counting iterator will just return the index at which the relevant data is stored. 
+#image("./acc_comp_pics/6.png", width: 80%) // Make sure this file exists  
+Thrust has inbuilt operators which we can use to perform reduction algorithms, speeding up the execution of the code.
+#image("./acc_comp_pics/7.png", width: 80%) // Make sure this file exists  
+
+
+
